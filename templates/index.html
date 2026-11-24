@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetic Retinopathy Detection | DIP Final Project</title>
+  <!-- Tailwind CSS CDN with fallback -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- NAVBAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md">
+          <i class="fa-solid fa-eye text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">RetinaScan <span class="text-teal-600">DIP</span></h1>
+          <p class="text-xs text-slate-500 font-medium">Diabetic Retinopathy Image Processing & Staging</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+        <a href="#analyzer" class="hover:text-teal-600 transition-colors">Analyzer</a>
+        <a href="#pipeline-section" class="hover:text-teal-600 transition-colors">DIP Pipeline</a>
+        <a href="#history-section" class="hover:text-teal-600 transition-colors">History & Stats</a>
+        <a href="#viva-section" class="hover:text-teal-600 transition-colors flex items-center space-x-1.5 text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Viva Q&A</span>
+        </a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+          DIP Engine Ready
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-12">
+
+    <!-- HERO & UPLOAD SECTION -->
+    <section id="analyzer" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Upload & Sample Selector -->
+      <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
+            DIP College Project • Step-by-Step Fundus Analysis
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">
+            Automated Retinal Lesion Segmentation & Staging
+          </h2>
+          <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+            Upload a high-resolution retinal fundus photograph or test sample cases to visualize green channel extraction, CLAHE contrast enhancement, blood vessel segmentation, and microaneurysm detection.
+          </p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div id="drop-zone" class="border-2 border-dashed border-slate-300 hover:border-teal-500 transition-all rounded-xl p-8 text-center cursor-pointer bg-slate-50/50 hover:bg-teal-50/20 group">
+          <input type="file" id="file-input" class="hidden" accept="image/jpeg,image/png,image/jpg" />
+          <div id="drop-zone-idle" class="space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-full bg-teal-100 group-hover:scale-110 transition-transform flex items-center justify-center text-teal-600">
+              <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-700">Drag & drop retinal image here, or <span class="text-teal-600 underline">browse</span></p>
+              <p class="text-xs text-slate-500 mt-1">Supports standard fundus formats: JPG, PNG (Auto-resized to 512x512)</p>
+            </div>
+          </div>
+
+          <!-- Preview on selected file -->
+          <div id="drop-zone-preview" class="hidden space-y-3">
+            <img id="preview-img" src="" alt="Selected Fundus" class="w-36 h-36 object-cover mx-auto rounded-xl border-2 border-teal-500 shadow-md" />
+            <p id="preview-filename" class="text-xs font-medium text-slate-700 truncate max-w-xs mx-auto"></p>
+            <button id="btn-change-image" type="button" class="text-xs text-slate-500 hover:text-red-600 underline">Choose different image</button>
+          </div>
+        </div>
+
+        <!-- 1-Click Sample Images Row -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <i class="fa-solid fa-vial mr-1 text-teal-600"></i> Try Verified Sample Cases (1-Click Test):
+            </span>
+            <span class="text-xs text-slate-400">All 5 ETDRS Stages</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="sample-buttons-container">
+            <button onclick="loadSample(0)" class="sample-btn px-2.5 py-2 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold text-center transition flex flex-col items-center">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mb-1"></span>
+              Stage 0
+              <span class="text-[10px] text-emerald-600 font-normal">No DR</span>
+            </button>
+            <button onclick="loadSample(1)" class="sample-btn px-2.5 py-2 rounded-lg border border-yellow-200 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 text-xs font-semibold text-center transition flex flex-col items-center">
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 mb-1"></span>
+              Stage 1
+              <span class="text-[10px] text-yellow-600 font-normal">Mild</span>
+            </button>
+            <button onclick="loadSample(2)" class="sample-btn px-2.5 py-2 rounded-lg border border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-800 text-xs font-semibold text-center transition flex flex-col items-center">
+              <span class="w-2.5 h-2.5 rounded-full bg-orange-500 mb-1"></span>
+              Stage 2
+              <span class="text-[10px] text-orange-600 font-normal">Moderate</span>
+            </button>
+            <button onclick="loadSample(3)" class="sample-btn px-2.5 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-800 text-xs font-semibold text-center transition flex flex-col items-center">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 mb-1"></span>
+              Stage 3
+              <span class="text-[10px] text-red-600 font-normal">Severe</span>
+            </button>
+            <button onclick="loadSample(4)" class="sample-btn px-2.5 py-2 rounded-lg border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-900 text-xs font-semibold text-center transition flex flex-col items-center col-span-2 sm:col-span-1">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-900 mb-1"></span>
+              Stage 4
+              <span class="text-[10px] text-rose-700 font-normal">Proliferative</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="btn-analyze" type="button" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-microscope text-base"></i>
+          <span>Execute DIP Pipeline & Staging</span>
+        </button>
+
+        <!-- Loading Progress Bar -->
+        <div id="processing-loader" class="hidden space-y-3 bg-teal-50/70 p-4 rounded-xl border border-teal-200">
+          <div class="flex items-center justify-between text-xs font-bold text-teal-800">
+            <span id="loader-step-text" class="flex items-center space-x-2">
+              <i class="fa-solid fa-circle-notch fa-spin text-teal-600"></i>
+              <span>Initializing Digital Image Processing...</span>
+            </span>
+            <span id="loader-percentage" class="text-teal-700">0%</span>
+          </div>
+          <div class="w-full bg-teal-200/60 rounded-full h-2.5 overflow-hidden">
+            <div id="loader-bar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2.5 rounded-full transition-all duration-300" style="width: 10%"></div>
+          </div>
+        </div>
+
+        <!-- Alert messages -->
+        <div id="error-alert" class="hidden p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start space-x-3">
+          <i class="fa-solid fa-circle-exclamation text-base mt-0.5 text-red-500"></i>
+          <div>
+            <p class="font-bold">Processing Error</p>
+            <p id="error-alert-msg" class="mt-0.5">Please upload a valid retinal fundus image.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Quick Diagnostics Summary Card -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Diagnostic Stage Badge Card -->
+        <div id="prediction-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Diagnostic Verdict</span>
+            <span id="report-id-tag" class="text-xs font-mono text-slate-400">ID: #--------</span>
+          </div>
+
+          <div class="text-center py-4 space-y-3">
+            <div id="stage-badge-container">
+              <span id="stage-badge" class="inline-block px-5 py-2 rounded-full text-base font-extrabold bg-slate-100 text-slate-500 border border-slate-200 shadow-sm">
+                Awaiting Retinal Image
+              </span>
+            </div>
+            <p id="stage-subtext" class="text-xs text-slate-500">Select an image or sample on the left to begin.</p>
+          </div>
+
+          <!-- Confidence Meter -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-slate-600">Model Confidence</span>
+              <span id="confidence-val" class="text-teal-700 font-bold">0.0%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <div id="confidence-bar" class="h-2.5 rounded-full bg-teal-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Recommendation Alert Box -->
+          <div id="recommendation-box" class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <div class="flex items-center space-x-2 text-xs font-bold text-slate-700">
+              <i class="fa-solid fa-user-doctor text-teal-600"></i>
+              <span>Clinical Triage Recommendation</span>
+            </div>
+            <p id="recommendation-text" class="text-xs text-slate-600 leading-relaxed">
+              Upload a fundus image to view triage urgency and specialist referral guidance.
+            </p>
+          </div>
+
+          <!-- Probability Distribution Bars -->
+          <div class="space-y-2 pt-2 border-t border-slate-100">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+              <span>ETDRS Stage Probabilities</span>
+              <span class="text-[11px] text-slate-400 font-normal">Random Forest Ensemble</span>
+            </div>
+
+            <div class="space-y-1.5 text-xs" id="prob-bars-container">
+              <!-- Class 0 -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span>0 - No DR (Normal)</span>
+                  <span id="prob-val-0">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="prob-bar-0" class="h-1.5 bg-emerald-500 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+              <!-- Class 1 -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span>1 - Mild NPDR</span>
+                  <span id="prob-val-1">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="prob-bar-1" class="h-1.5 bg-yellow-500 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+              <!-- Class 2 -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span>2 - Moderate NPDR</span>
+                  <span id="prob-val-2">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="prob-bar-2" class="h-1.5 bg-orange-500 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+              <!-- Class 3 -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span>3 - Severe NPDR</span>
+                  <span id="prob-val-3">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="prob-bar-3" class="h-1.5 bg-red-500 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+              <!-- Class 4 -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span>4 - Proliferative (PDR)</span>
+                  <span id="prob-val-4">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="prob-bar-4" class="h-1.5 bg-rose-900 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Download PDF Report Button -->
+          <button id="btn-download-pdf" disabled type="button" class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-400 font-bold text-xs border border-slate-200 transition flex items-center justify-center space-x-2 cursor-not-allowed">
+            <i class="fa-solid fa-file-pdf text-red-500 text-sm"></i>
+            <span>Download Official PDF Medical Report</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION B: DIP STEP-BY-STEP VISUALIZATION (MAIN VIVA COMPONENT) -->
+    <section id="pipeline-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
+            Viva Showcase • Live Image Processing Steps
+          </span>
+          <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 mt-2">
+            Intermediate DIP Transformation Stages
+          </h3>
+          <p class="text-xs text-slate-500 mt-1">
+            Click on any image to inspect high-resolution pixel structures and filters.
+          </p>
+        </div>
+
+        <!-- Pipeline Timeline Pills -->
+        <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold text-slate-600">
+          <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-md border border-teal-200">1. Preprocess</span>
+          <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+          <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-md border border-teal-200">2. Enhance</span>
+          <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+          <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-md border border-teal-200">3. Segment</span>
+          <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+          <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-md border border-teal-200">4. Lesions</span>
+          <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i>
+          <span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200">5. Staging</span>
+        </div>
+      </div>
+
+      <!-- 6-Grid DIP Step Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Original Image -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-original', '1. Original Retinal Fundus (512x512)', 'Base color fundus photograph containing the optic disc, macula, and retinal blood vessel network.')">
+            <img id="img-original" src="/static/samples/sample_2_moderate.jpg" alt="Original" class="w-full h-full object-contain" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">1. Original Image</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-mono">512x512 BGR</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              Standardized input. Normalizes color channels and field-of-view aperture.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Green Channel Extraction -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-green', '2. Green Channel Extraction', 'Viva Key: Green channel corresponds to the peak optical absorption of hemoglobin (~570nm), yielding the sharpest contrast between blood vessels/lesions and retinal background.')">
+            <img id="img-green" src="/static/samples/sample_2_moderate.jpg" alt="Green Channel" class="w-full h-full object-contain filter grayscale" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">2. Green Channel</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Peak Contrast</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              <b>Viva Note:</b> Hemoglobin absorbs ~570nm green light strongly, making vessels stand out distinctly.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3: CLAHE Enhanced -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-clahe', '3. CLAHE Enhancement (Contrast Limited Adaptive Histogram Equalization)', 'Divides fundus into 8x8 contextual tiles to equalize local contrast. Contrast clipping at 2.5 avoids amplifying background sensor noise.')">
+            <img id="img-clahe" src="/static/samples/sample_2_moderate.jpg" alt="CLAHE" class="w-full h-full object-contain" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">3. CLAHE Enhanced</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">Local Equalization</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              8x8 contextual tiles. Equalizes uneven illumination without over-saturating noise.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4: Blood Vessel Segmentation -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-vessels', '4. Blood Vessel Segmentation', 'Applies Morphological Top-Hat and Bottom-Hat transforms with disk structuring elements followed by Adaptive Gaussian Thresholding and connected-component noise suppression.')">
+            <img id="img-vessels" src="/static/samples/sample_2_moderate.jpg" alt="Vessels" class="w-full h-full object-contain" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">4. Vessel Segmentation</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">Morphology + Threshold</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              Top-Hat filter highlights vascular tree; connected components clean small noise specs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 5: Lesion Detection -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-lesions', '5. Microaneurysms & Exudates Detection', 'Red circles indicate detected microaneurysms and hemorrhages. Yellow boxes indicate hard lipid exudates. Optic disc is masked in cyan to prevent false positives.')">
+            <img id="img-lesions" src="/static/samples/sample_2_moderate.jpg" alt="Lesions" class="w-full h-full object-contain" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">5. Lesion Detection</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">Red: MA | Yel: Exudate</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              Circularity & area filtering detects capillary outpouchings and lipid leaks.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 6: Composite Clinical Overlay -->
+        <div class="dip-card bg-slate-50 border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition">
+          <div class="relative bg-black aspect-square flex items-center justify-center group cursor-pointer" onclick="openLightbox('img-overlay', '6. Composite Clinical Overlay', 'Full synthetic diagnostic map: Cyan outlines for segmented vessel network, red circles for microaneurysms, yellow contours for hard exudates.')">
+            <img id="img-overlay" src="/static/samples/sample_2_moderate.jpg" alt="Overlay" class="w-full h-full object-contain" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-magnifying-glass-plus mr-1.5"></i> Click to Enlarge
+            </div>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-bold text-slate-900">6. Final Clinical Overlay</h4>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">Diagnostic Map</span>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">
+              Composite visualization for ophthalmologist review and diagnostic verification.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quantitative Biomarker Metrics Grid -->
+      <div class="pt-6 border-t border-slate-100 space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center space-x-1.5">
+          <i class="fa-solid fa-chart-simple text-teal-600"></i>
+          <span>Extracted DIP Biomarkers & Quantitative Values</span>
+        </h4>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+          
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Vessel Density</p>
+            <p id="feat-vessel-density" class="text-lg font-extrabold text-slate-800 mt-1">--%</p>
+            <p class="text-[10px] text-slate-400">Normal: 9-14%</p>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Microaneurysms</p>
+            <p id="feat-ma-count" class="text-lg font-extrabold text-red-600 mt-1">--</p>
+            <p class="text-[10px] text-slate-400">Normal: 0</p>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Hard Exudates</p>
+            <p id="feat-ex-count" class="text-lg font-extrabold text-yellow-600 mt-1">--</p>
+            <p class="text-[10px] text-slate-400">Normal: 0</p>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Exudate Area</p>
+            <p id="feat-ex-area" class="text-lg font-extrabold text-slate-800 mt-1">--%</p>
+            <p class="text-[10px] text-slate-400">Normal: &lt;0.01%</p>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Vessel Tortuosity</p>
+            <p id="feat-tortuosity" class="text-lg font-extrabold text-slate-800 mt-1">--</p>
+            <p class="text-[10px] text-slate-400">Normal: 10-35</p>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase">Mean Intensity</p>
+            <p id="feat-mean-intensity" class="text-lg font-extrabold text-slate-800 mt-1">--</p>
+            <p class="text-[10px] text-slate-400">Green channel</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION D: HISTORY & STATS DASHBOARD -->
+    <section id="history-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
+            Persistent Records • SQLite / JSON Store
+          </span>
+          <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 mt-2">
+            Analysis History & Screening Analytics
+          </h3>
+          <p class="text-xs text-slate-500 mt-1">
+            Browse through previous fundus assessments, download reports, or reload cases.
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="clearAllHistory()" class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition">
+            <i class="fa-solid fa-trash-can mr-1"></i> Clear History
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Summary Cards & Donut Chart -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <!-- 3 Stat Cards -->
+        <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+              <span>Total Retinas Scanned</span>
+              <i class="fa-solid fa-layer-group text-teal-600"></i>
+            </div>
+            <p id="stat-total-scans" class="text-2xl font-extrabold text-slate-800 mt-2">0</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Persisted in history</p>
+          </div>
+
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <div class="flex items-center justify-between text-emerald-700 text-xs font-semibold">
+              <span>Normal Retinas</span>
+              <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            </div>
+            <p id="stat-normal-scans" class="text-2xl font-extrabold text-emerald-800 mt-2">0</p>
+            <p id="stat-normal-pct" class="text-[11px] text-emerald-600 mt-0.5">0% of total</p>
+          </div>
+
+          <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl">
+            <div class="flex items-center justify-between text-rose-700 text-xs font-semibold">
+              <span>DR Pathology Detected</span>
+              <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+            </div>
+            <p id="stat-dr-scans" class="text-2xl font-extrabold text-rose-800 mt-2">0</p>
+            <p id="stat-dr-pct" class="text-[11px] text-rose-600 mt-0.5">0% triage rate</p>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="md:col-span-4 flex items-center justify-center p-2 bg-slate-50 border border-slate-200 rounded-xl h-44">
+          <canvas id="drStatsChart" class="max-h-36"></canvas>
+        </div>
+      </div>
+
+      <!-- History Table Filter & Search -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+        <div class="flex items-center space-x-2">
+          <button onclick="filterHistory('all')" class="hist-filter-btn px-3 py-1 rounded-lg text-xs font-semibold bg-teal-600 text-white" data-filter="all">All</button>
+          <button onclick="filterHistory('0')" class="hist-filter-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700" data-filter="0">Normal</button>
+          <button onclick="filterHistory('dr')" class="hist-filter-btn px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700" data-filter="dr">DR Detected</button>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <input type="text" id="hist-search" placeholder="Search ID or image..." oninput="searchHistory(this.value)" class="w-full px-3 py-1.5 pl-8 text-xs rounded-lg border border-slate-300 focus:outline-none focus:border-teal-500" />
+          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase text-[10px] tracking-wider">
+            <tr>
+              <th class="p-3">Thumbnail</th>
+              <th class="p-3">Report ID</th>
+              <th class="p-3">Diagnostic Verdict</th>
+              <th class="p-3">Confidence</th>
+              <th class="p-3">Lesions (MA / EX)</th>
+              <th class="p-3">Timestamp</th>
+              <th class="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="7" class="p-6 text-center text-slate-400">Loading history records...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION E: VIVA PREP & DIP COMPENDIUM (CRUCIAL FOR COLLEGE VIVA) -->
+    <section id="viva-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-8">
+      <div>
+        <span class="text-xs uppercase tracking-wider font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
+          College Viva Voce Guide • Examiner Q&A
+        </span>
+        <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 mt-2">
+          Digital Image Processing Foundations & Defense Q&A
+        </h3>
+        <p class="text-xs text-slate-500 mt-1">
+          Review these answers before your project viva to confidently answer questions on color channels, CLAHE, morphological operators, and clinical DR grading.
+        </p>
+      </div>
+
+      <!-- DIP Pipeline Explanation Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/40 space-y-2">
+          <h4 class="text-sm font-bold text-teal-900 flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">1</span>
+            <span>Why Green Channel instead of Grayscale?</span>
+          </h4>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            In standard RGB fundus cameras, the red channel is over-saturated with choroidal back-scatter, while the blue channel suffers from severe Rayleigh scattering and low penetration. Oxygenated hemoglobin has its highest optical absorption around <b>540–570 nm (green band)</b>. Hence, retinal blood vessels and microaneurysms appear with <b>maximum contrast</b> in the green channel.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/40 space-y-2">
+          <h4 class="text-sm font-bold text-teal-900 flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">2</span>
+            <span>What is CLAHE and why not Global Histogram Equalization?</span>
+          </h4>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            Standard global histogram equalization uses the whole image histogram, which over-amplifies noise in relatively homogeneous fundus backgrounds. <b>CLAHE</b> operates on small contextual tiles (8x8) and <b>clips the histogram at a clip limit (2.5)</b> before redistribution. This enhances subtle vessel edges and faint lesions while keeping background noise suppressed.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/40 space-y-2">
+          <h4 class="text-sm font-bold text-teal-900 flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">3</span>
+            <span>How does Morphological Blood Vessel Segmentation work?</span>
+          </h4>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            We employ <b>Morphological Top-Hat</b> ($I - \text{Opening}(I)$) and <b>Bottom-Hat</b> transforms with structuring elements larger than the maximum vessel width. Morphological closing removes narrow vessel valleys to estimate the background illumination profile. Subtracting the enhanced image from background yields pure vessel signal, followed by <b>Adaptive Gaussian Thresholding</b>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/40 space-y-2">
+          <h4 class="text-sm font-bold text-teal-900 flex items-center space-x-2">
+            <span class="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">4</span>
+            <span>Why must the Optic Disc be masked before Exudate detection?</span>
+          </h4>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            The optic nerve head (optic disc) is naturally the brightest, yellowish circular feature in the retina. Both hard exudates and the optic disc have high pixel intensities and yellow hues. Without finding and masking the optic disc circle, thresholding algorithms would wrongly classify the entire optic disc as a massive exudate lesion!
+          </p>
+        </div>
+
+      </div>
+
+      <!-- 5 ETDRS Clinical Stages Reference Table -->
+      <div class="space-y-3">
+        <h4 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+          <i class="fa-solid fa-notes-medical text-teal-600"></i>
+          <span>International Clinical Diabetic Retinopathy Disease Severity Scale (ETDRS)</span>
+        </h4>
+
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+              <tr>
+                <th class="p-3">Stage</th>
+                <th class="p-3">Disease Level</th>
+                <th class="p-3">Ophthalmoscopic Hallmarks (DIP Findings)</th>
+                <th class="p-3">Clinical Action Plan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-emerald-700">Stage 0</td>
+                <td class="p-3 font-semibold">No Apparent Retinopathy</td>
+                <td class="p-3 text-slate-600">Zero microaneurysms, zero exudates, intact regular vasculature</td>
+                <td class="p-3 text-slate-600">Annual dilated eye examination</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-yellow-700">Stage 1</td>
+                <td class="p-3 font-semibold">Mild NPDR</td>
+                <td class="p-3 text-slate-600">Microaneurysms only (small red capillary outpouchings)</td>
+                <td class="p-3 text-slate-600">Rescreen in 6–12 months, optimize HbA1c</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-orange-700">Stage 2</td>
+                <td class="p-3 font-semibold">Moderate NPDR</td>
+                <td class="p-3 text-slate-600">Multiple microaneurysms, hard lipid exudates, cotton-wool spots</td>
+                <td class="p-3 text-slate-600">Referral to ophthalmologist within 2–4 weeks</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-red-700">Stage 3</td>
+                <td class="p-3 font-semibold">Severe NPDR</td>
+                <td class="p-3 text-slate-600">>20 intraretinal hemorrhages in 4 quadrants, venous beading, IRMA</td>
+                <td class="p-3 text-slate-600">Urgent ophthalmologist review within 1–2 weeks</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="p-3 font-bold text-rose-900">Stage 4</td>
+                <td class="p-3 font-semibold">Proliferative DR (PDR)</td>
+                <td class="p-3 text-slate-600">Neovascularization (new abnormal fragile vessels), vitreous hemorrhage</td>
+                <td class="p-3 text-slate-600">Immediate specialist care (Anti-VEGF / Laser Photocoagulation)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- LIGHTBOX MODAL FOR IMAGE INSPECTION -->
+  <div id="lightbox-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl space-y-4 p-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 id="lightbox-title" class="text-base font-bold text-slate-900">Enlarged Inspection</h3>
+        <button onclick="closeLightbox()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="bg-black rounded-xl overflow-hidden flex items-center justify-center max-h-[65vh]">
+        <img id="lightbox-img" src="" alt="Enlarged" class="w-full h-full object-contain max-h-[60vh]" />
+      </div>
+
+      <div class="p-3 bg-teal-50/70 border border-teal-100 rounded-xl">
+        <p id="lightbox-desc" class="text-xs text-slate-700 leading-relaxed"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-1">
+      <p class="font-semibold text-slate-700">Digital Image Processing (DIP) Mini/Major Project • College Demo Edition</p>
+      <p>Tech Stack: OpenCV (cv2) • Python Flask • Scikit-Learn Random Forest • Tailwind CSS • ReportLab PDF</p>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

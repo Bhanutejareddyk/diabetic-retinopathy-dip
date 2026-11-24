@@ -1,0 +1,442 @@
+[
+  {
+    "report_id": "bc451915",
+    "image_name": "sample_4_proliferative.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:24:00",
+    "features": {
+      "vessel_density": 12.9,
+      "microaneurysm_count": 8,
+      "exudate_count": 31,
+      "exudate_area_pct": 0.274,
+      "mean_intensity": 63.4,
+      "contrast_std": 21.04,
+      "vessel_tortuosity": 516.21,
+      "total_lesions": 39
+    },
+    "prediction": {
+      "name": "Proliferative DR",
+      "stage": "Stage 4",
+      "severity": "Proliferative (PDR)",
+      "color": "#7F1D1D",
+      "badge_class": "bg-rose-900 text-white border-rose-950",
+      "recommendation": "CRITICAL: Proliferative diabetic retinopathy with neovascularization. Immediate vitreoretinal specialist intervention required (anti-VEGF or panretinal photocoagulation).",
+      "urgency": "Emergency - Immediate specialist evaluation",
+      "clinical_notes": "Neovascularization of disc/retina with high risk of vitreous hemorrhage, tractional retinal detachment, and irreversible vision loss.",
+      "class_id": 4,
+      "confidence": 90.0,
+      "probabilities": {
+        "0": 0.5,
+        "1": 0.5,
+        "2": 2.0,
+        "3": 7.0,
+        "4": 90.0
+      }
+    },
+    "images": {
+      "original": "/static/processed/bc451915/original.jpg",
+      "green": "/static/processed/bc451915/green.jpg",
+      "clahe": "/static/processed/bc451915/clahe.jpg",
+      "vessels": "/static/processed/bc451915/vessels.jpg",
+      "optic_disc": "/static/processed/bc451915/optic_disc.jpg",
+      "lesions": "/static/processed/bc451915/lesions.jpg",
+      "overlay": "/static/processed/bc451915/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "ab84a98b",
+    "image_name": "sample_3_severe.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:24:00",
+    "features": {
+      "vessel_density": 8.84,
+      "microaneurysm_count": 2,
+      "exudate_count": 16,
+      "exudate_area_pct": 0.155,
+      "mean_intensity": 66.03,
+      "contrast_std": 20.62,
+      "vessel_tortuosity": 506.26,
+      "total_lesions": 18
+    },
+    "prediction": {
+      "name": "Severe Non-Proliferative DR",
+      "stage": "Stage 3",
+      "severity": "Severe NPDR",
+      "color": "#EF4444",
+      "badge_class": "bg-red-100 text-red-800 border-red-300",
+      "recommendation": "Severe retinal ischemia and widespread hemorrhages/exudates. Urgent ophthalmologist referral required within 1-2 weeks.",
+      "urgency": "Urgent - Referral within 1-2 weeks",
+      "clinical_notes": "Abundant intraretinal microvascular abnormalities (IRMA) and venous changes. 50% risk of progressing to PDR within one year.",
+      "class_id": 3,
+      "confidence": 84.0,
+      "probabilities": {
+        "0": 0.5,
+        "1": 1.5,
+        "2": 8.0,
+        "3": 84.0,
+        "4": 6.0
+      }
+    },
+    "images": {
+      "original": "/static/processed/ab84a98b/original.jpg",
+      "green": "/static/processed/ab84a98b/green.jpg",
+      "clahe": "/static/processed/ab84a98b/clahe.jpg",
+      "vessels": "/static/processed/ab84a98b/vessels.jpg",
+      "optic_disc": "/static/processed/ab84a98b/optic_disc.jpg",
+      "lesions": "/static/processed/ab84a98b/lesions.jpg",
+      "overlay": "/static/processed/ab84a98b/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "c0b764bb",
+    "image_name": "sample_2_moderate.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:23:59",
+    "features": {
+      "vessel_density": 8.17,
+      "microaneurysm_count": 6,
+      "exudate_count": 5,
+      "exudate_area_pct": 0.048,
+      "mean_intensity": 63.37,
+      "contrast_std": 18.66,
+      "vessel_tortuosity": 515.94,
+      "total_lesions": 11
+    },
+    "prediction": {
+      "name": "Moderate Non-Proliferative DR",
+      "stage": "Stage 2",
+      "severity": "Moderate NPDR",
+      "color": "#F97316",
+      "badge_class": "bg-orange-100 text-orange-800 border-orange-300",
+      "recommendation": "Multiple microaneurysms and hard exudates detected. Consult an ophthalmologist within 2-4 weeks for optical coherence tomography (OCT).",
+      "urgency": "High - Consult ophthalmologist within 2-4 weeks",
+      "clinical_notes": "Increased microaneurysm burden with visible lipid exudation. High risk of progression without glycemic and lipid intervention.",
+      "class_id": 2,
+      "confidence": 86.0,
+      "probabilities": {
+        "0": 1.0,
+        "1": 6.0,
+        "2": 86.0,
+        "3": 5.0,
+        "4": 2.0
+      }
+    },
+    "images": {
+      "original": "/static/processed/c0b764bb/original.jpg",
+      "green": "/static/processed/c0b764bb/green.jpg",
+      "clahe": "/static/processed/c0b764bb/clahe.jpg",
+      "vessels": "/static/processed/c0b764bb/vessels.jpg",
+      "optic_disc": "/static/processed/c0b764bb/optic_disc.jpg",
+      "lesions": "/static/processed/c0b764bb/lesions.jpg",
+      "overlay": "/static/processed/c0b764bb/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "bf6a026a",
+    "image_name": "sample_1_mild.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:23:58",
+    "features": {
+      "vessel_density": 8.46,
+      "microaneurysm_count": 1,
+      "exudate_count": 1,
+      "exudate_area_pct": 0.018,
+      "mean_intensity": 61.03,
+      "contrast_std": 18.26,
+      "vessel_tortuosity": 517.03,
+      "total_lesions": 2
+    },
+    "prediction": {
+      "name": "Mild Non-Proliferative DR",
+      "stage": "Stage 1",
+      "severity": "Mild NPDR",
+      "color": "#EAB308",
+      "badge_class": "bg-yellow-100 text-yellow-800 border-yellow-300",
+      "recommendation": "Mild microaneurysms detected. Maintain tight glycemic and blood pressure control. Follow-up eye exam in 6-12 months.",
+      "urgency": "Moderate - Schedule within 6 months",
+      "clinical_notes": "Early microaneurysms present as small capillary wall outpouchings. No macular edema or hard exudate threats detected.",
+      "class_id": 1,
+      "confidence": 88.0,
+      "probabilities": {
+        "0": 5.0,
+        "1": 88.0,
+        "2": 5.0,
+        "3": 1.0,
+        "4": 1.0
+      }
+    },
+    "images": {
+      "original": "/static/processed/bf6a026a/original.jpg",
+      "green": "/static/processed/bf6a026a/green.jpg",
+      "clahe": "/static/processed/bf6a026a/clahe.jpg",
+      "vessels": "/static/processed/bf6a026a/vessels.jpg",
+      "optic_disc": "/static/processed/bf6a026a/optic_disc.jpg",
+      "lesions": "/static/processed/bf6a026a/lesions.jpg",
+      "overlay": "/static/processed/bf6a026a/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "2f0e515f",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:23:57",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/2f0e515f/original.jpg",
+      "green": "/static/processed/2f0e515f/green.jpg",
+      "clahe": "/static/processed/2f0e515f/clahe.jpg",
+      "vessels": "/static/processed/2f0e515f/vessels.jpg",
+      "optic_disc": "/static/processed/2f0e515f/optic_disc.jpg",
+      "lesions": "/static/processed/2f0e515f/lesions.jpg",
+      "overlay": "/static/processed/2f0e515f/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "f5e228f3",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:22:46",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/f5e228f3/original.jpg",
+      "green": "/static/processed/f5e228f3/green.jpg",
+      "clahe": "/static/processed/f5e228f3/clahe.jpg",
+      "vessels": "/static/processed/f5e228f3/vessels.jpg",
+      "optic_disc": "/static/processed/f5e228f3/optic_disc.jpg",
+      "lesions": "/static/processed/f5e228f3/lesions.jpg",
+      "overlay": "/static/processed/f5e228f3/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "49f34464",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:19:58",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/49f34464/original.jpg",
+      "green": "/static/processed/49f34464/green.jpg",
+      "clahe": "/static/processed/49f34464/clahe.jpg",
+      "vessels": "/static/processed/49f34464/vessels.jpg",
+      "optic_disc": "/static/processed/49f34464/optic_disc.jpg",
+      "lesions": "/static/processed/49f34464/lesions.jpg",
+      "overlay": "/static/processed/49f34464/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "75c0c806",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:19:16",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/75c0c806/original.jpg",
+      "green": "/static/processed/75c0c806/green.jpg",
+      "clahe": "/static/processed/75c0c806/clahe.jpg",
+      "vessels": "/static/processed/75c0c806/vessels.jpg",
+      "optic_disc": "/static/processed/75c0c806/optic_disc.jpg",
+      "lesions": "/static/processed/75c0c806/lesions.jpg",
+      "overlay": "/static/processed/75c0c806/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "5f19e8b3",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:18:37",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/5f19e8b3/original.jpg",
+      "green": "/static/processed/5f19e8b3/green.jpg",
+      "clahe": "/static/processed/5f19e8b3/clahe.jpg",
+      "vessels": "/static/processed/5f19e8b3/vessels.jpg",
+      "optic_disc": "/static/processed/5f19e8b3/optic_disc.jpg",
+      "lesions": "/static/processed/5f19e8b3/lesions.jpg",
+      "overlay": "/static/processed/5f19e8b3/overlay.jpg"
+    }
+  },
+  {
+    "report_id": "e983a31e",
+    "image_name": "sample_0_no_dr.jpg",
+    "source": "Sample",
+    "timestamp": "2026-11-24 16:17:49",
+    "features": {
+      "vessel_density": 8.69,
+      "microaneurysm_count": 0,
+      "exudate_count": 0,
+      "exudate_area_pct": 0.0,
+      "mean_intensity": 63.4,
+      "contrast_std": 19.59,
+      "vessel_tortuosity": 503.38,
+      "total_lesions": 0
+    },
+    "prediction": {
+      "name": "No DR (Normal)",
+      "stage": "Stage 0",
+      "severity": "Normal",
+      "color": "#10B981",
+      "badge_class": "bg-emerald-100 text-emerald-800 border-emerald-300",
+      "recommendation": "No evidence of diabetic retinopathy. Routine annual dilated eye exam recommended.",
+      "urgency": "Low - Annual checkup",
+      "clinical_notes": "Retina appears healthy. No microaneurysms, hemorrhages, or exudates observed. Vessel architecture normal.",
+      "class_id": 0,
+      "confidence": 96.0,
+      "probabilities": {
+        "0": 96.0,
+        "1": 2.0,
+        "2": 1.0,
+        "3": 0.5,
+        "4": 0.5
+      }
+    },
+    "images": {
+      "original": "/static/processed/e983a31e/original.jpg",
+      "green": "/static/processed/e983a31e/green.jpg",
+      "clahe": "/static/processed/e983a31e/clahe.jpg",
+      "vessels": "/static/processed/e983a31e/vessels.jpg",
+      "optic_disc": "/static/processed/e983a31e/optic_disc.jpg",
+      "lesions": "/static/processed/e983a31e/lesions.jpg",
+      "overlay": "/static/processed/e983a31e/overlay.jpg"
+    }
+  }
+]
