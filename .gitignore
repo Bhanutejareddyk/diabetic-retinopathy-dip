@@ -33,3 +33,5 @@ static/processed/*
 # OS generated
 .DS_Store
 Thumbs.db
+
+.vercel
